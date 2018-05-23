@@ -1,66 +1,43 @@
-FROM octoblu/alpine-ca-certificates:latest
+FROM debian
 # https://github.com/jcupitt/libvips
 
-#COPY vips-8.6.3.tar.gz /tmp/vips-8.6.3.tar.gz
+COPY vips-8.6.3.tar.gz /tmp/vips-8.6.3.tar.gz
 WORKDIR /tmp
-ENV LIBVIPS_VERSION_MAJOR 8
-ENV LIBVIPS_VERSION_MINOR 6
-ENV LIBVIPS_VERSION_PATCH 3
 
-RUN apk add --no-cache --virtual .build-deps \
-  gcc g++ make libc-dev \
-  automake \
-  libtool \
-  tar \
-  gettext \
-  ca-certificates \
-  openssl \
-  curl && \
+RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-free" >>/etc/apt/sources.list && \
+  echo "deb http://deb.debian.org/debian jessie-backports-sloppy main contrib non-free" >>/etc/apt/sources.list && \
+  apt update && \
+  apt install -y \
+    dpkg-dev \
+    pkg-config \
+    libglib2.0-dev \
+    libexpat1-dev \
+    libtiff5-dev \
+    libjpeg62-turbo-dev \
+    libgsf-1-dev \
+    libgif-dev \
+    libpng-dev \
+    libavcodec57 \
+    libavformat57 \
+    libswscale4 \
+    libavcodec-dev \
+    libavutil-dev \
+    libavformat-dev \
+    libswscale-dev \
+    imagemagick \
+    ca-certificates && \
 
-apk add --no-cache --virtual .libdev-deps \
-  glib-dev \
-  imagemagick-dev \
-  libgsf-dev \
-  fftw-dev \
-  libpng-dev \
-  libwebp-dev \
-  libexif-dev \
-  libxml2-dev \
-  giflib-dev \
-  tiff-dev \
-  libjpeg-turbo-dev \
-  expat-dev && \
-
-apk add --no-cache --virtual .run-deps \
-  glib \
-  libpng \
-  libwebp \
-  libexif \
-  libxml2 \
-  libjpeg-turbo \
-  libstdc++ \
-  libgcc \
-  imagemagick \
-  giflib \
-  fftw \
-  libgsf \
-  expat && \
-
-  LIBVIPS_VERSION=${LIBVIPS_VERSION_MAJOR}.${LIBVIPS_VERSION_MINOR}.${LIBVIPS_VERSION_PATCH} && \
-  wget https://github.com/jcupitt/libvips/releases/download/v${LIBVIPS_VERSION_MAJOR}.${LIBVIPS_VERSION_MINOR}.${LIBVIPS_VERSION_PATCH}/vips-${LIBVIPS_VERSION}.tar.gz && \
-  tar zvxf vips-${LIBVIPS_VERSION}.tar.gz && \
-  cd vips-${LIBVIPS_VERSION} && \
+  tar zvxf vips-8.6.3.tar.gz && \
+  cd vips-8.6.3 && \
   ./configure && \
   make -j4 && \
   make install && \
   rm -rf /tmp/vips-* && \
 
-  apk del .build-deps && \
-  apk del .libdev-deps && \
-  rm -rf /var/cache/apk/* && \
+  rm -rf /var/cache/apt/* && \
   rm -rf /tmp/vips-*
 
 ENV CPATH /usr/local/include
 ENV LIBRARY_PATH /usr/local/lib
 ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
-
+ENV LD_LIBRARY_PATH=/usr/local/lib
