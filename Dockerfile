@@ -1,7 +1,7 @@
 FROM debian
 # https://github.com/jcupitt/libvips
 
-COPY vips-8.6.3.tar.gz /tmp/vips-8.6.3.tar.gz
+COPY vips-8.6.5.tar.gz /tmp/vips-8.6.5.tar.gz
 WORKDIR /tmp
 
 RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-free" >>/etc/apt/sources.list && \
@@ -17,6 +17,7 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     libgsf-1-dev \
     libgif-dev \
     libpng-dev \
+    librsvg2-dev \
     libavcodec57 \
     libavformat57 \
     libswscale4 \
@@ -27,8 +28,8 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     imagemagick \
     ca-certificates && \
 
-  tar zvxf vips-8.6.3.tar.gz && \
-  cd vips-8.6.3 && \
+  tar zvxf vips-8.6.5.tar.gz && \
+  cd vips-8.6.5 && \
   ./configure && \
   make -j4 && \
   make install && \
