@@ -11,6 +11,7 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     dpkg-dev \
     pkg-config \
     libglib2.0-dev \
+    libexif-dev \
     libexpat1-dev \
     libtiff5-dev \
     libjpeg62-turbo-dev \
@@ -25,6 +26,7 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     libavutil-dev \
     libavformat-dev \
     libswscale-dev \
+    libwebp-dev \
     imagemagick \
     ca-certificates && \
 
