@@ -1,13 +1,13 @@
 FROM debian
 # https://github.com/jcupitt/libvips
 
-COPY vips-8.6.5.tar.gz /tmp/vips-8.6.5.tar.gz
 WORKDIR /tmp
 
 RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-free" >>/etc/apt/sources.list && \
   echo "deb http://deb.debian.org/debian jessie-backports-sloppy main contrib non-free" >>/etc/apt/sources.list && \
   apt update && \
   apt install -y \
+    wget \
     dpkg-dev \
     pkg-config \
     libglib2.0-dev \
@@ -27,18 +27,31 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     libavformat-dev \
     libswscale-dev \
     libwebp-dev \
-    imagemagick \
-    ca-certificates && \
+    libmagic-dev \
+    ca-certificates \
+    autoconf \
+    libtool \
+    swig \
+    gobject-introspection \
+    gtk-doc-tools && \
 
-  tar zvxf vips-8.6.5.tar.gz && \
-  cd vips-8.6.5 && \
+  mkdir ImageMagic && cd $_ && \
+  wget -O ImageMagick.tar.gz https://imagemagick.org/download/ImageMagick.tar.gz && \
+  tar --strip=1 -xvf ImageMagick.tar.gz && \
   ./configure && \
-  make -j4 && \
+  make -j4 -s && \
   make install && \
-  rm -rf /tmp/vips-* && \
 
-  rm -rf /var/cache/apt/* && \
-  rm -rf /tmp/vips-*
+  cd .. && \
+  mkdir vips && cd $_ && \
+  wget -O vips.tar.gz https://github.com/jcupitt/libvips/archive/v8.7.0.tar.gz && \
+  tar --strip=1 -zvxf vips.tar.gz && \
+  ./autogen.sh && \
+  ./configure && \
+  make -j4 -s && \
+  make install && \
+  cd .. && \
+  rm -rf /tmp/vips-* /tmp/ImageMagic /var/cache/apt/*
 
 ENV CPATH /usr/local/include
 ENV LIBRARY_PATH /usr/local/lib
