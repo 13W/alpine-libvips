@@ -1,1 +1,1 @@
-# alpine-libvips
+# debian + vips
