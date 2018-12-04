@@ -6,6 +6,7 @@ WORKDIR /tmp
 RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-free" >>/etc/apt/sources.list && \
   echo "deb http://deb.debian.org/debian jessie-backports-sloppy main contrib non-free" >>/etc/apt/sources.list && \
   apt update && \
+  apt upgrade -y && \
   apt install -y \
     wget \
     dpkg-dev \
@@ -28,6 +29,8 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     libswscale-dev \
     libwebp-dev \
     libmagic-dev \
+    libde265-dev \
+    libx265-dev \
     ca-certificates \
     autoconf \
     libtool \
@@ -35,6 +38,15 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     gobject-introspection \
     gtk-doc-tools && \
 
+  mkdir libheif && cd $_ && \
+  wget -O libheif.tar.gz https://github.com/strukturag/libheif/releases/download/v1.3.2/libheif-1.3.2.tar.gz && \
+  tar --strip=1 -xvf libheif.tar.gz && \
+  ./autogen.sh && \
+  ./configure && \
+  make -j4 -s && \
+  make install && \
+
+  cd .. && \
   mkdir ImageMagic && cd $_ && \
   wget -O ImageMagick.tar.gz https://imagemagick.org/download/ImageMagick.tar.gz && \
   tar --strip=1 -xvf ImageMagick.tar.gz && \
@@ -51,7 +63,7 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
   make -j4 -s && \
   make install && \
   cd .. && \
-  rm -rf /tmp/vips-* /tmp/ImageMagic /var/cache/apt/*
+  rm -rf /tmp/libheif /tmp/vips /tmp/ImageMagic /var/cache/apt/*
 
 ENV CPATH /usr/local/include
 ENV LIBRARY_PATH /usr/local/lib
