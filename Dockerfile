@@ -1,10 +1,9 @@
-FROM debian
+FROM debian:buster
 # https://github.com/jcupitt/libvips
 
 WORKDIR /tmp
 
-RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-free" >>/etc/apt/sources.list && \
-  echo "deb http://deb.debian.org/debian jessie-backports-sloppy main contrib non-free" >>/etc/apt/sources.list && \
+RUN echo "deb http://deb.debian.org/debian buster-backports main contrib non-free" >> /etc/apt/sources.list && \
   apt update && \
   apt upgrade -y && \
   apt install -y \
@@ -20,9 +19,9 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     libgif-dev \
     libpng-dev \
     librsvg2-dev \
-    libavcodec57 \
-    libavformat57 \
-    libswscale4 \
+    libavcodec58 \
+    libavformat58 \
+    libswscale5 \
     libavcodec-dev \
     libavutil-dev \
     libavformat-dev \
@@ -37,7 +36,6 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
     swig \
     gobject-introspection \
     gtk-doc-tools && \
-
   mkdir libheif && cd $_ && \
   wget -O libheif.tar.gz https://github.com/strukturag/libheif/releases/download/v1.3.2/libheif-1.3.2.tar.gz && \
   tar --strip=1 -xvf libheif.tar.gz && \
@@ -45,7 +43,6 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
   ./configure && \
   make -j4 -s && \
   make install && \
-
   cd .. && \
   mkdir ImageMagic && cd $_ && \
   wget -O ImageMagick.tar.gz https://imagemagick.org/download/ImageMagick.tar.gz && \
@@ -53,7 +50,6 @@ RUN echo "deb http://deb.debian.org/debian jessie-backports main contrib non-fre
   ./configure && \
   make -j4 -s && \
   make install && \
-
   cd .. && \
   mkdir vips && cd $_ && \
   wget -O vips.tar.gz https://github.com/jcupitt/libvips/archive/v8.7.0.tar.gz && \
