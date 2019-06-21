@@ -2,9 +2,9 @@
 export VERSION=${1:-"latest"}
 export GO_VERSION=${2:-"1.11.2"}
 
-#docker build --no-cache --force-rm --rm --tag me13w/debian-vips:${VERSION} .
+docker build --no-cache --force-rm --rm --tag me13w/debian-vips:${VERSION} .
 
-docker build --no-cache --force-rm --rm --tag me13w/devian-vips-build:${VERSION} . -f-<<END
+docker build --no-cache --force-rm --rm --tag me13w/debian-vips-build:${VERSION} . -f-<<END
 FROM me13w/debian-vips:${VERSION}
 RUN apt install -y jq git && \
   wget -q "https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz" -O /tmp/go.tar.gz && \
